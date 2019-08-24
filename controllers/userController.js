@@ -31,10 +31,17 @@ const userController = {
   signInPage: (req, res) => {
     res.render('signin')
   },
+
   signIn: (req, res) => {
+    if (req.user.isAdmin) {
+      req.flash('success_messages', `Admin 成功登入!`)
+      return res.redirect('/admin/users')
+    }
+
     req.flash('success_messages', '成功登入!')
-    res. redirect('/restaurants')
+    res.redirect('/restaurants')
   },
+
   logout: (req, res) => {
     req.flash('success_messages', '登出成功!')
     req.logout()
