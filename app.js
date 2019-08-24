@@ -9,6 +9,10 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const methodOverride = require('method-override')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 // setup handlebars
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
