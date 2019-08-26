@@ -4,6 +4,8 @@ const User = db.User
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const Op = require('sequelize').Op
+
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -123,7 +125,7 @@ const adminController = {
   },
   
   editUsers: (req, res) => {
-    return User.findAll().then(users => {
+    return User.findAll({ where:{ email: { [Op.ne]: 'root@example.com' } } }).then(users => {
       return res.render('admin/users', { users: users })
     })
   },
@@ -137,20 +139,16 @@ const adminController = {
       }
 
       if (req.user.id === user.id) {
-        req.flash('error_messages', "This action is not allow")
+        req.flash('error_messages', "This action is not allowed")
         return res.redirect('/admin/users')
       }
 
-      if (user.isAdmin) {
-        user.update({isAdmin: false})
-      } else {
-        user.update({isAdmin: true})        
-      }
-      return user
-    })
-    .then(user => {
-      req.flash('success_messages', 'user was successfully to update')
-      res.redirect('/admin/users')
+      user.update({isAdmin: !user.isAdmin})
+      .then(user => {
+        const text = (user.isAdmin)? 'Admin' : 'User'
+        req.flash('success_messages', `${user.name} was successfully to update to ${text}`)
+        res.redirect('/admin/users')
+      })
     })
   }
 }
