@@ -5,6 +5,9 @@
   <li class="nav-item">
     <a class="nav-link active" href="/restaurants/feeds">最新動態</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/users/top">美食達人</a>
+  </li>
 </ul>
 <br /><br />
 <h1>最新動態</h1>
@@ -17,15 +20,15 @@
       </div>
       <div class="card-body">
         {{#each restaurants}}
-          <div>
-            <h4>
-              <a href="/restaurants/{{this.id}}">{{this.name}}</a>
-              <small>{{this.Category.name}}</small>
-            </h4>
-            <p>{{this.description}}</p>
-            {{moment this.createdAt}}
-            <hr>
-          </div>
+        <div>
+          <h4>
+            <a href="/restaurants/{{this.id}}">{{this.name}}</a>
+            <small>{{this.Category.name}}</small>
+          </h4>
+          <p>{{this.description}}</p>
+          {{moment this.createdAt}}
+          <hr>
+        </div>
         {{/each}}
       </div>
     </div>
@@ -37,15 +40,15 @@
       </div>
       <div class="card-body">
         {{#each comments}}
-          <div>
-            <h4>
-              <a href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
-            </h4>
-            <p>{{this.text}}</p>
-            by <a href="/users/{{this.User.id}}">{{this.User.name}}</a>
-            at {{moment this.createdAt}}
-            <hr>
-          </div>
+        <div>
+          <h4>
+            <a href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+          </h4>
+          <p>{{this.text}}</p>
+          by <a href="/users/{{this.User.id}}">{{this.User.name}}</a>
+          at {{moment this.createdAt}}
+          <hr>
+        </div>
         {{/each}}
       </div>
     </div>
