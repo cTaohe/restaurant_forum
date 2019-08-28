@@ -1,5 +1,5 @@
-<div class="row bg-white">
-  <div class="col-md-4" style="padding: 0;">
+<div class="row mx-0 my-5" style="background-color: white;">
+  <div class="col-md-4 p-0">
     {{#if profile.image}}
     <img src="{{profile.image}}" alt="{{profile.name}}" style="width: 100%;">
     {{else}}
@@ -16,3 +16,16 @@
     {{/ifCond}}
   </div>
 </div>
+<div class="card">
+  <h5 class="card-header">{{comment.length}} 已經評論餐廳</h5>
+  <div class="card-body row">
+    {{#each comment}}
+    <div class="m-1">
+      <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none;">
+        <img src="{{this.Restaurant.image}}" alt="{{this.Restaurant.name}}">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>
+<a href="javascript:history.back()">回上一頁</a>

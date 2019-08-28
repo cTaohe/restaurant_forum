@@ -3,6 +3,9 @@ const db = require('../models')
 const User = db.User
 const Favorite = db.Favorite
 const Followship = db.Followship
+const Comment = db.Comment
+const Restaurant = db.Restaurant
+
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
@@ -54,8 +57,17 @@ const userController = {
 
   // Profile
   getUser: (req, res) => {
-    User.findByPk(req.params.id).then(profile => {
-      return res.render('users/profile', { profile: profile, user: req.user })
+    User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: [Restaurant]}
+      ]
+    }).then(profile => {
+      const comment = profile.Comments
+      return res.render('users/profile', {
+        profile: profile,
+        user: req.user,
+        comment: comment
+      })
     })
   },
   // Profile 頁面
