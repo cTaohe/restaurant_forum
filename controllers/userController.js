@@ -3,6 +3,8 @@ const db = require('../models')
 const User = db.User
 const Favorite = db.Favorite
 const Followship = db.Followship
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   singUpPage: (req, res) => {
@@ -50,13 +52,78 @@ const userController = {
     res.redirect('/signin')
   },
 
+  // Profile
+  getUser: (req, res) => {
+    User.findByPk(req.params.id).then(profile => {
+      return res.render('users/profile', { profile: profile, user: req.user })
+    })
+  },
+  // Profile 頁面
+  editUser: (req, res) => {
+    User.findByPk(req.params.id).then(profile => {
+      if (req.user.id !== Number(profile.id)) {
+        req.flash('error_messages', '無權編輯此 profile')
+        return res.redirect(`/users/${req.params.id}`)
+      }
+      return res.render('users/edit', { profile: profile })
+    })
+  },
+  // 編輯 Profile
+  putUser: (req, res) => {
+
+    // 非 Profile 資料本人
+    if (req.user.id !== Number(req.params.id)) {
+      req.flash('error_messages', '無權編輯此 profile')
+      return res.redirect(`/users/${req.params.id}`)
+    }
+    // 名字空白
+    if (!req.body.name) {
+      return res.render(`users/edit`, { profile: req.user, 'error_messages': `請填寫名字` })
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        return User.findByPk(req.params.id)
+          .then(user => {
+            user.update({
+              name: req.body.name,
+              image: file ? img.data.link : user.image
+            })
+              .then(profile => {
+                return res.render('users/profile', {
+                  profile: profile,
+                  user: req.user,
+                  'success_messages': `已修改 ${profile.name} 的資料`
+                })
+              })
+          })
+      })
+    } else {
+      return User.findByPk(req.params.id)
+        .then(user => {
+          user.update({
+            name: req.body.name,
+            image: user.image
+          })
+            .then(profile => {
+              return res.render('users/profile', {
+                profile: profile,
+                user: req.user,
+                'success_messages': `已修改 ${profile.name} 的資料`
+              })
+            })
+        })
+    }
+  },
+
   addFavorite: (req, res) => {
     return Favorite.create({
       UserId: req.user.id,
       RestaurantId: req.params.restaurantId
     })
       .then((favorite) => {
-        console.log(favorite)
         return res.redirect('back')
       })
   },
@@ -87,7 +154,6 @@ const userController = {
         FollowerCount: user.Followers.length,
         isFollowed: req.user.Followings.map(d => d.id).includes(user.id)
       }))
-      console.log(users[0].FollowerCount)
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
       return res.render('topUser', { users: users })
     })
