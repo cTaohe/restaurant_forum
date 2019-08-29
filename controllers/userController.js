@@ -5,6 +5,7 @@ const Favorite = db.Favorite
 const Followship = db.Followship
 const Comment = db.Comment
 const Restaurant = db.Restaurant
+const Like = db.Like
 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -59,7 +60,7 @@ const userController = {
   getUser: (req, res) => {
     User.findByPk(req.params.id, {
       include: [
-        { model: Comment, include: [Restaurant]}
+        { model: Comment, include: [Restaurant] }
       ]
     }).then(profile => {
       const comment = profile.Comments
@@ -153,6 +154,34 @@ const userController = {
             return res.redirect('back')
           })
       })
+  },
+
+  addLike: async (req, res) => {
+    try {
+      const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
+
+      if (!like) {
+        Like.create({
+          UserId: req.user.id,
+          RestaurantId: req.params.restaurantId
+        })
+        return res.redirect('back')
+      } else {
+        console.log("already liked")
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  removeLike: async (req, res) => {
+    try {
+      const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
+      like ? like.destroy() : console.log('not exist')
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
   },
 
   getTopUser: (req, res) => {
