@@ -86,6 +86,27 @@ let restController = {
         })
       })
     })
+  },
+
+  getTopRestaurant: async (req, res) => {
+    try {
+      let restaurants = await Restaurant.findAll({ include: [{ model: db.User, as: 'FavoritedUsers' }] })
+      console.log(restaurants)
+      restaurants = await restaurants.map(r => ({
+        ...r.dataValues,
+        FavoritedCount: r.FavoritedUsers.length,
+        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id),
+        description: r.dataValues.description.substring(0, 50)
+      }))
+
+      let topRestaurants = await restaurants.filter(restaurant => restaurant.FavoritedCount > 0
+        ).sort((a, b) => b.FavoritedCount - a.FavoritedCount
+        ).slice(0, 9)
+
+      return res.render('topRestaurant', { topRestaurants })
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 module.exports = restController
