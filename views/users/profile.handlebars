@@ -11,21 +11,81 @@
     {{profile.email}}
     <br />
     <br />
+    <ul>
+      <li>已經評論 {{comments.length}} 家餐廳</li>
+      <li>收藏 {{profile.FavoritedRestaurants.length}} 家餐廳</li>
+      <li>following(追蹤): {{profile.Followings.length}} 人</li>
+      <li>follower(追蹤者): {{profile.Followers.length}} 人</li>
+    </ul>
     {{#ifCond profile.id user.id}}
     <a href="/users/{{profile.id}}/edit" class="btn btn-primary">edit</a>
     {{/ifCond}}
+      {{#if profile.isFollowed }}
+      <form action="/following/{{profile.id}}?_method=DELETE" method="POST" style="display: inline;"><button
+          type="submit" class="btn btn-danger">取消追蹤</button></form>
+      {{else}}
+      <form action="/following/{{profile.id}}" method="POST" style="display: inline;"><button type="submit"
+          class="btn btn-primary">追蹤</button></form>
+      {{/if}}
   </div>
 </div>
-<div class="card">
-  <h5 class="card-header">{{comment.length}} 已經評論餐廳</h5>
-  <div class="card-body row">
-    {{#each comment}}
-    <div class="m-1">
-      <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none;">
-        <img src="{{this.Restaurant.image}}" alt="{{this.Restaurant.name}}">
-      </a>
+<div class="row">
+  <div class="col-4">
+    <div class="card">
+      <h5 class="card-header">following(追蹤): {{profile.Followings.length}} 人</h5>
+      <div class="card-body row">
+        {{#each profile.Followings}}
+        <div class="m-1">
+          <a href="/users/{{this.id}}" style="text-decoration:none;">
+            <img src="{{this.image}}" alt="{{this.name}}">
+          </a>
+        </div>
+        {{/each}}
+      </div>
     </div>
-    {{/each}}
+    <br />
+    <div class="card">
+      <h5 class="card-header">follower(追蹤者): {{profile.Followers.length}} 人</h5>
+      <div class="card-body row">
+        {{#each profile.Followers}}
+        <div class="m-1">
+          <a href="/users/{{this.id}}" style="text-decoration:none;">
+            <img src="{{this.image}}" alt="{{this.name}}">
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
   </div>
+  <div class="col-8">
+    <div class="card">
+      <h5 class="card-header">已經評論 {{comments.length}} 家餐廳</h5>
+      <div class="card-body row">
+        {{#each comments}}
+        <div class="m-1">
+          <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none;">
+            <img src="{{this.Restaurant.image}}" alt="{{this.Restaurant.name}}">
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    <br />
+    <div class="card">
+      <h5 class="card-header">收藏 {{profile.FavoritedRestaurants.length}} 家餐廳</h5>
+      <div class="card-body row">
+        {{#each profile.FavoritedRestaurants}}
+        <div class="m-1">
+          <a href="/restaurants/{{this.id}}" style="text-decoration:none;">
+            <img src="{{this.image}}" alt="{{this.name}}">
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
 </div>
+
+
 <a href="javascript:history.back()">回上一頁</a>
