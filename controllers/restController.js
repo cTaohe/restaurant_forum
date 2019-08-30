@@ -5,6 +5,7 @@ const Comment = db.Comment
 const Favorite = db.Favorite
 const User = db.User
 const pageLimit = 10
+const sequelize = require('sequelize')
 
 let restController = {
   getRestaurants: (req, res) => {
@@ -32,7 +33,7 @@ let restController = {
       }))
 
       Category.findAll().then(categories => {
-        return res.render('restaurants', {restaurants: data, categories, categoryId, page, totalPage, prev, next })
+        return res.render('restaurants', { restaurants: data, categories, categoryId, page, totalPage, prev, next })
       })
     })
   },
@@ -45,14 +46,14 @@ let restController = {
         { model: Comment, include: [User] }
       ]
     })
-    .then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
-      restaurant.increment('viewCounts', {by:1})
-      return res.render('restaurant', {
-        restaurant: restaurant,
-        isFavorited: isFavorited,
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
+        restaurant.increment('viewCounts', { by: 1 })
+        return res.render('restaurant', {
+          restaurant: restaurant,
+          isFavorited: isFavorited,
+        })
       })
-    })
   },
 
   getDashboard: (req, res) => {
@@ -89,19 +90,30 @@ let restController = {
 
   getTopRestaurant: async (req, res) => {
     try {
-      let restaurants = await Restaurant.findAll({ include: [{ model: db.User, as: 'FavoritedUsers' }] })
-      console.log(restaurants)
+      let restaurants = await Restaurant.findAll({
+        include: [{ model: db.User, as: 'FavoritedUsers' }],
+        attributes: [
+          'Restaurant.address',
+          [sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id)'), 'FavoritedCount'],
+          'name',
+          'description',
+          'image',
+          'id'
+        ],
+        order: [[sequelize.literal('FavoritedCount'), 'DESC']],
+        limit: 10
+      })
+
       restaurants = await restaurants.map(r => ({
         ...r.dataValues,
-        FavoritedCount: r.FavoritedUsers.length,
         isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id),
         description: r.dataValues.description.substring(0, 50)
       }))
 
       let topRestaurants = await restaurants.filter(restaurant => restaurant.FavoritedCount > 0
-        ).sort((a, b) => b.FavoritedCount - a.FavoritedCount
-        ).slice(0, 9)
-
+      ).sort((a, b) => b.FavoritedCount - a.FavoritedCount
+      )
+      
       return res.render('topRestaurant', { topRestaurants })
     } catch (e) {
       console.log(e)
