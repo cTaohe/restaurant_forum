@@ -80,21 +80,11 @@ const userController = {
   // Profile 頁面
   editUser: (req, res) => {
     User.findByPk(req.params.id).then(profile => {
-      if (req.user.id !== Number(profile.id)) {
-        req.flash('error_messages', '無權編輯此 profile')
-        return res.redirect(`/users/${req.params.id}`)
-      }
       return res.render('users/edit', { profile: profile })
     })
   },
   // 編輯 Profile
   putUser: (req, res) => {
-
-    // 非 Profile 資料本人
-    if (req.user.id !== Number(req.params.id)) {
-      req.flash('error_messages', '無權編輯此 profile')
-      return res.redirect(`/users/${req.params.id}`)
-    }
     // 名字空白
     if (!req.body.name) {
       return res.render(`users/edit`, { profile: req.user, 'error_messages': `請填寫名字` })

@@ -5,23 +5,9 @@ const categoryController = require('../controllers/categoryController.js')
 const commentController = require('../controllers/commentController.js')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
-module.exports = (app, passport) => {
-  const authenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      return next()
-    }
-    return res.redirect('/signin')
-  }
-  const authenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      if (req.user.isAdmin) {
-        return next()
-      }
-      return res.redirect('/')
-    }
-    res.redirect('/signin')
-  }
+const { isUser, authenticated, authenticatedAdmin } = require('../middleware/middleware.js')
 
+module.exports = (app, passport) => {
 
   app.get('/', authenticated, (req, res) => res.redirect('restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
@@ -57,8 +43,8 @@ module.exports = (app, passport) => {
 
   app.get('/users/top', authenticated, userController.getTopUser)
   app.get('/users/:id', authenticated, userController.getUser)
-  app.get('/users/:id/edit', authenticated, userController.editUser)
-  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+  app.get('/users/:id/edit', authenticated, isUser, userController.editUser)
+  app.put('/users/:id', authenticated, upload.single('image'), isUser, userController.putUser)
 
   app.post('/comments', authenticated, commentController.postComment)
   app.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
