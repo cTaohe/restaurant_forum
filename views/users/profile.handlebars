@@ -19,14 +19,15 @@
     </ul>
     {{#ifCond profile.id user.id}}
     <a href="/users/{{profile.id}}/edit" class="btn btn-primary">edit</a>
+    {{else}}
+    {{#if profile.isFollowed }}
+    <form action="/following/{{profile.id}}?_method=DELETE" method="POST" style="display: inline;"><button type="submit"
+        class="btn btn-danger">取消追蹤</button></form>
+    {{else}}
+    <form action="/following/{{profile.id}}" method="POST" style="display: inline;"><button type="submit"
+        class="btn btn-primary">追蹤</button></form>
+    {{/if}}
     {{/ifCond}}
-      {{#if profile.isFollowed }}
-      <form action="/following/{{profile.id}}?_method=DELETE" method="POST" style="display: inline;"><button
-          type="submit" class="btn btn-danger">取消追蹤</button></form>
-      {{else}}
-      <form action="/following/{{profile.id}}" method="POST" style="display: inline;"><button type="submit"
-          class="btn btn-primary">追蹤</button></form>
-      {{/if}}
   </div>
 </div>
 <div class="row">
@@ -87,5 +88,4 @@
 
 </div>
 
-
-<a href="javascript:history.back()">回上一頁</a>
+<a href="/">回首頁</a>

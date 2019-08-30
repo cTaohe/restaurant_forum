@@ -111,11 +111,7 @@ const userController = {
               image: file ? img.data.link : user.image
             })
               .then(profile => {
-                return res.render('users/profile', {
-                  profile: profile,
-                  user: req.user,
-                  'success_messages': `已修改 ${profile.name} 的資料`
-                })
+                return res.redirect(`/users/${profile.id}`)
               })
           })
       })
@@ -127,11 +123,7 @@ const userController = {
             image: user.image
           })
             .then(profile => {
-              return res.render('users/profile', {
-                profile: profile,
-                user: req.user,
-                'success_messages': `已修改 ${profile.name} 的資料`
-              })
+              return res.redirect(`/users/${profile.id}`)
             })
         })
     }
