@@ -90,20 +90,29 @@ let restController = {
 
   getTopRestaurant: async (req, res) => {
     try {
+      let attributeQuery = ''
+      let orderQuery = ''
+
+      if (process.env.heroku) {
+        attributeQuery = '(SELECT COUNT(*) FROM "Favorites" WHERE "Favorites"."RestaurantId" = "Restaurant"."id")'
+        orderQuery = '"FavoritedCount" DESC'
+      } else {
+        attributeQuery = '(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id)'
+        orderQuery = 'FavoritedCount DESC'
+      }
+
       let restaurants = await Restaurant.findAll({
-        include: [{ model: db.User, as: 'FavoritedUsers' }],
         attributes: [
-          'Restaurant.address',
-          [sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id)'), 'FavoritedCount'],
+          [sequelize.literal(attributeQuery), 'FavoritedCount'],
           'name',
           'description',
           'image',
           'id'
         ],
-        order: [[sequelize.literal('FavoritedCount'), 'DESC']],
+        order: sequelize.literal(orderQuery),
         limit: 10
       })
-
+      console.log(restaurants)
       restaurants = await restaurants.map(r => ({
         ...r.dataValues,
         isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id),
@@ -111,7 +120,6 @@ let restController = {
       }))
 
       let topRestaurants = await restaurants.filter(restaurant => restaurant.FavoritedCount > 0
-      ).sort((a, b) => b.FavoritedCount - a.FavoritedCount
       )
       
       return res.render('topRestaurant', { topRestaurants })
