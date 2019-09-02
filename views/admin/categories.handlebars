@@ -1,8 +1,8 @@
 <h1>餐廳後台</h1>
 <br/>
-  <a href='/admin/restaurants'>restaurants</a> | 
+  <a href='/admin/restaurants'>Restaurants</a> | 
   <a href='/admin/categories'>Categories</a> | 
-  <a href='/admin/users'>users</a>
+  <a href='/admin/users'>Users</a>
 <br/>
 <br/>
 <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
@@ -30,7 +30,7 @@
     </tr>
   </thead>
   <tbody>
-    {{#each categories}}
+    {{#each categories.rows}}
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
@@ -48,5 +48,26 @@
     {{/each}}
   </tbody>
 </table>
-<br />
-<br />
+<nav>
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a href="/admin/categories?page={{prev}}" class="page-link"><span aria-hidden="true">«</span></a>
+    </li>
+    {{#each totalPage}}
+      {{#ifCond this ../page}}
+      <li class="page-item">
+        <a href="/admin/categories?page={{this}}" class="page-link active">{{this}}</a>
+      </li>
+      {{else}}
+      <li class="page-item">
+        <a href="/admin/categories?page={{this}}" class="page-link">{{this}}</a>
+      </li>
+      {{/ifCond}}
+      {{/each}}
+    <li class="page-item">
+        <a href="/admin/categories?page={{next}}" class="page-link">
+          <span aria-hidden="true">»</span>
+        </a>
+      </li>
+  </ul>
+</nav>

@@ -1,9 +1,8 @@
 <h1>餐廳後台</h1>
 
-<br/>
-  <a href='/admin/restaurants'>restaurants</a> | 
+  <a href='/admin/restaurants'>Restaurants</a> | 
   <a href='/admin/categories'>Categories</a> | 
-  <a href='/admin/users'>users</a>
+  <a href='/admin/users'>Users</a>
 <br/>
 <br/>
 
@@ -24,7 +23,7 @@
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each restaurants.rows}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
@@ -48,3 +47,28 @@
     {{/each}}
   </tbody>
 </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a href="/admin/restaurants?page={{prev}}" class="page-link">
+          <span aria-hidden="true">«</span>
+        </a>
+      </li>
+      {{#each totalPage}}
+      {{#ifCond this ../page}}
+      <li class="page-item">
+        <a href="#" class="page-link active">{{this}}</a>
+      </li>
+      {{else}}
+      <li class="page-item">
+        <a href="/admin/restaurants?page={{this}}" class="page-link">{{this}}</a>
+      </li>
+      {{/ifCond}}
+      {{/each}}
+      <li class="page-item">
+        <a href="/admin/restaurants?page={{next}}" class="page-link">
+          <span aria-hidden="true">»</span>
+        </a>
+      </li>
+    </ul>
+  </nav>

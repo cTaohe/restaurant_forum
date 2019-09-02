@@ -9,6 +9,8 @@ const Category = db.Category
 
 const adminService = require('../services/adminServices.js')
 
+let pageLimit = 10
+
 const adminController = {
   getRestaurants: (req, res) => {
     adminService.getRestaurants(req, res, (data) => {
@@ -140,8 +142,19 @@ const adminController = {
   },
   
   editUsers: (req, res) => {
-    return User.findAll({ where:{ email: { [Op.ne]: 'root@example.com' } } }).then(users => {
-      return res.render('admin/users', { users: users })
+    let offset = 0
+    if (req.query.page) {
+      offset = (req.query.page - 1) * pageLimit
+    }
+
+    return User.findAndCountAll({ where:{ email: { [Op.ne]: 'root@example.com' } }, offset: offset, limit: pageLimit }).then(users => {
+      let page = Number(req.query.page) || 1
+      let pages = Math.ceil( users.count / pageLimit )
+      let totalPage = Array.from({length: pages}).map((item, index) => index + 1)
+      let prev = page - 1 < 1 ? 1 : page -1
+      let next = page + 1 > pages ? pages : page + 1
+      console.log(users)
+      return res.render('admin/users', { users, page, totalPage, prev, next })
     })
   },
 
