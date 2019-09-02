@@ -7,10 +7,12 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const Op = require('sequelize').Op
 const Category = db.Category
 
+const adminService = require('../services/adminServices.js')
+
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({include: [Category]}).then(restaurants => {
-      return res.render('admin/restaurants', {restaurants: restaurants })
+    adminService.getRestaurants(req, res, (data) => {
+      return res.render('admin/restaurants', data)
     })
   },
   createRestaurant: (req, res) => {
