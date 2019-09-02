@@ -22,6 +22,16 @@ const adminController = {
       callback({ restaurants: restaurants, page, totalPage, prev, next })
     })
   },
+
+  // admin get restaurant
+  getRestaurant: async (req, res, callback) => {
+    try {
+      let restaurant = await Restaurant.findByPk(req.params.id, {include: [Category] })
+      callback({restaurant})
+    } catch(e) {
+      console.log(e)
+    }
+  },
 }
 
 module.exports = adminController
