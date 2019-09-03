@@ -27,6 +27,23 @@ const adminController = {
       console.log(e)
     }
   },
+
+  // admin get category
+  getCategories: async (req, res, callback) => {
+    try {
+      const { page , limiting } = await pageInfo(pageLimit, req.query.page)
+      const categories = await Category.findAndCountAll(limiting)
+      const {totalPage, prev, next} = await getPagination(categories.count, pageLimit, page)
+      const category = await Category.findByPk(req.params.id)
+      if(req.params.id) {
+        callback({ categories, category, page, totalPage, prev, next })
+      } else {
+        callback({ categories, page, totalPage, prev, next })
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
 
 module.exports = adminController

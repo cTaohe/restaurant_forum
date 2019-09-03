@@ -1,7 +1,3 @@
-const db = require('../../models')
-const Restaurant = db.Restaurant
-const Category = db.Category
-
 const adminService = require('../../services/adminServices.js')
 
 const adminController = {
@@ -16,7 +12,7 @@ const adminController = {
       return res.json(data)
     })
   },
-  
+
 }
 
 module.exports = adminController
