@@ -12,5 +12,12 @@ const categoryController = {
       return res.json(data)
     })
   },
+
+  putCategory: (req, res) => {
+    adminService.putCategory(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
 }
 module.exports = categoryController
