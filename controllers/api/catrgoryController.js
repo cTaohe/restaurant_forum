@@ -19,5 +19,11 @@ const categoryController = {
     })
   },
 
+  deleteCategory: (req, res) => {
+    adminService.deleteCategory(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
 }
 module.exports = categoryController

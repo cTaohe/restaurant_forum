@@ -156,11 +156,29 @@ const adminController = {
     }
   },
 
+  deleteCategory: async (req, res, callback) => {
+    try {
+      const category = await Category.findByPk(req.params.id)
+      category.destroy().then(category => {
+        callback({status: 'success', message: 'category was successfully to delete'})
+      })
+    } catch (e) {
+      console.log(e)
+    }
+    // return Category.findByPk(req.params.id)
+    //   .then((category) => {
+    //     category.destroy()
+    //       .then((category) => {
+    //         res.redirect('/admin/categories')
+    //       })
+    //   })
+  },
+
   deleteRestaurant: async (req, ers, callback) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id)
       restaurant.destroy().then((restaurant) => {
-        callback({ status: 'success', message: '' })
+        callback({ status: 'success', message: 'restaurant was successfully to delete' })
       })
     } catch (e) {
       console.log(e)
