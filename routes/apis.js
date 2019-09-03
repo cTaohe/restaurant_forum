@@ -9,6 +9,7 @@ const catrgoryController = require('../controllers/api/catrgoryController')
 
 router.get('/admin/restaurants', adminController.getRestaurants)
 router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
+router.put('/admin/restaurants/:id', upload.single('image'), adminController.putRestaurtant)
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
 router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
