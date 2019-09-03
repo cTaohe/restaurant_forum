@@ -1,6 +1,7 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const Comment = db.Comment
 
 const pageLimit = 10
 
@@ -40,6 +41,17 @@ const adminController = {
       } else {
         callback({ categories, page, totalPage, prev, next })
       }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  deleteRestaurant: async (req, ers, callback) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      restaurant.destroy().then((restaurant) => {
+        callback({ status: 'success', message: '' })
+      })
     } catch (e) {
       console.log(e)
     }

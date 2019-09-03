@@ -1,7 +1,6 @@
 const db = require('../models')
 const Category = db.Category
 const adminService = require('../services/adminServices.js')
-let pageLimit = 10
 
 let categoryController = {
   getCategories: (req, res) => {
