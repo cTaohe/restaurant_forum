@@ -22,6 +22,20 @@ let middleware = {
       return res.redirect('/')
     }
     res.redirect('/signin')
+  },
+
+  pageInfo: (pageLimit, pageNumber = 1) => {
+    const page = parseInt(pageNumber)
+    const limiting = { offset: pageLimit * (page - 1), limit: pageLimit }
+    return { page, limiting }
+  },
+
+  getPagination: (count, pageLimit, page) => {
+    let pages =  Math.ceil(count / pageLimit)
+    let totalPage = Array.from({ length: pages }, (item, index) => index + 1)
+    let prev = page - 1 < 1 ? 1 : page - 1
+    let next = page + 1 > pages ? pages : page + 1
+    return {totalPage, prev, next}
   }
 }
 module.exports = middleware

@@ -1,22 +1,22 @@
 <h1>餐廳後台</h1>
-<br/>
-  <a href='/admin/restaurants'>Restaurants</a> | 
-  <a href='/admin/categories'>Categories</a> | 
-  <a href='/admin/users'>Users</a>
-<br/>
-<br/>
+<br />
+<a href='/admin/restaurants'>Restaurants</a> |
+<a href='/admin/categories'>Categories</a> |
+<a href='/admin/users'>Users</a>
+<br />
+<br />
 <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
   {{#if category}}
-    <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
-      <input type="text" placeholder="name" name="name" value="{{category.name}}">
-      <button type="submit">Update</button>
-      <a href="/admin/categories">or Create New</a>
-    </form>
+  <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+    <input type="text" placeholder="name" name="name" value="{{category.name}}">
+    <button type="submit">Update</button>
+    <a href="/admin/categories">or Create New</a>
+  </form>
   {{else}}
-    <form action="/admin/categories" method="POST">
-      <input type="text" placeholder="name" name="name">
-      <button type="submit">Submit</button>
-    </form>
+  <form action="/admin/categories" method="POST">
+    <input type="text" placeholder="name" name="name">
+    <button type="submit">Submit</button>
+  </form>
   {{/if}}
 </div>
 <br />
@@ -31,43 +31,45 @@
   </thead>
   <tbody>
     {{#each categories.rows}}
-      <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>
-          <button type="button" class="btn btn-link">
-            <a href="/admin/categories/{{this.id}}">
-              Edit
-            </a>
-          </button>
-          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link">Delete</button>
-          </form>
-        </td>
-      </tr>
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/categories/{{this.id}}">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">Delete</button>
+        </form>
+      </td>
+    </tr>
     {{/each}}
   </tbody>
 </table>
-<nav>
+<nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
     <li class="page-item">
-      <a href="/admin/categories?page={{prev}}" class="page-link"><span aria-hidden="true">«</span></a>
+      <a href="/admin/categories?page={{prev}}" class="page-link">
+        <span aria-hidden="true">«</span>
+      </a>
     </li>
     {{#each totalPage}}
-      {{#ifCond this ../page}}
-      <li class="page-item">
-        <a href="/admin/categories?page={{this}}" class="page-link active">{{this}}</a>
-      </li>
-      {{else}}
-      <li class="page-item">
-        <a href="/admin/categories?page={{this}}" class="page-link">{{this}}</a>
-      </li>
-      {{/ifCond}}
-      {{/each}}
+    {{#ifCond this ../page}}
+    <li class="page-item active">
+      <a href="#" class="page-link">{{this}}</a>
+    </li>
+    {{else}}
     <li class="page-item">
-        <a href="/admin/categories?page={{next}}" class="page-link">
-          <span aria-hidden="true">»</span>
-        </a>
-      </li>
+      <a href="/admin/categories?page={{this}}" class="page-link">{{this}}</a>
+    </li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item">
+      <a href="/admin/categories?page={{next}}" class="page-link">
+        <span aria-hidden="true">»</span>
+      </a>
+    </li>
   </ul>
 </nav>

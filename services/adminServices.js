@@ -4,23 +4,18 @@ const Category = db.Category
 
 const pageLimit = 10
 
+const {pageInfo, getPagination} = require('../middleware/middleware.js')
+
 const adminController = {
-  getRestaurants: (req, res, callback) => {
-    let offset = 0
-
-    if (req.query.page) {
-      offset = (req.query.page - 1) * pageLimit
+  getRestaurants: async (req, res, callback) => {
+    try {
+      const { page, limiting } = await pageInfo(pageLimit, req.query.page)
+      const restaurants = await Restaurant.findAndCountAll(limiting)
+      const {totalPage, prev, next} = await getPagination(restaurants.count, pageLimit, page)
+      callback({ restaurants, page, totalPage, prev, next })
+    } catch (e) {
+      console.log(e)
     }
-    
-    return Restaurant.findAndCountAll({offset: offset, limit: pageLimit}).then(restaurants => {
-      let page = Number(req.query.page) || 1
-      let pages = Math.ceil(restaurants.count / pageLimit)
-      let totalPage = Array.from({ length: pages }).map((item, index) => index + 1 )
-      let prev = page - 1 < 1 ? 1 : page - 1
-      let next = page +1 > pages ? pages : page + 1
-
-      callback({ restaurants: restaurants, page, totalPage, prev, next })
-    })
   },
 
   // admin get restaurant

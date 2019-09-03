@@ -43,12 +43,12 @@
 <nav>
   <ul class="pagination justify-content-center">
     <li class="page-item">
-      <a href="/admin/users?page={{prev}}"><span aria-hidden="true" class="page-link">«</span></a>
+      <a href="/admin/users?page={{prev}}" class="page-link"><span aria-hidden="true">«</span></a>
     </li>
     {{#each totalPage}}
     {{#ifCond this ../page}}
     <li class="page-item active">
-      <a href="#" class="page-link active">{{this}}</a>
+      <a href="#" class="page-link">{{this}}</a>
     </li>
     {{else}}
     <li class="page-item">
