@@ -1,25 +1,25 @@
-const db = require('../models')
-const Comment = db.Comment
+const commentServices = require('../services/commentServices.js')
 
 let commentController = {
   postComment: (req, res) => {
-    return Comment.create({
-      text: req.body.text,
-      RestaurantId: req.body.restaurantId,
-      UserId: req.user.id
-    })
-      .then((comment) => {
+    commentServices.postComment(req, res, (data) => {
+      if (data['status'] === 'success') {
+        req.flash('success_messages', data['message'])
         res.redirect(`/restaurants/${req.body.restaurantId}`)
-      })
+      }
+    })
   },
+
   deleteComment: (req, res) => {
-    return Comment.findByPk(req.params.id)
-      .then((comment) => {
-        comment.destroy()
-          .then((comment) => {
-            res.redirect(`/restaurants/${comment.RestaurantId}`)
-          })
-      })
+    commentServices.deleteComment(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
+        res.redirect('back')
+      } else {
+        req.flash('success_messages', data['message'])
+        res.redirect('back')
+      }
+    })
   }
 }
 module.exports = commentController

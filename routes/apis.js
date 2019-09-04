@@ -7,6 +7,7 @@ const upload = multer({ dest: 'temp/' })
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/catrgoryController')
 const userController = require('../controllers/api/userController.js')
+const commentController = require('../controllers/api/commentController.js')
 const passport = require('../config/passport')
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -30,6 +31,9 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike) /
 
 router.post('/following/:userId', authenticated, userController.addFollowing) // add follow
 router.delete('/following/:userId', authenticated, userController.removeFollowing) // remove follow
+
+router.post('/comments', authenticated, commentController.postComment)
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
 router.get('/users/top', authenticated, userController.getTopUser) // top user
 router.get('/users/:id', authenticated, userController.getUser) //user profile page
