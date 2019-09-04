@@ -10,6 +10,7 @@ const userController = require('../controllers/api/userController.js')
 const commentController = require('../controllers/api/commentController.js')
 const passport = require('../config/passport')
 const authenticated = passport.authenticate('jwt', { session: false })
+const restController = require('../controllers/api/restController.js')
 
 const authenticatedAdmin = (req, res, next) => {
   if (req.user) {
@@ -22,6 +23,12 @@ const authenticatedAdmin = (req, res, next) => {
 
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
+
+router.get('/restaurants', authenticated, restController.getRestaurants) // restaurants
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) //feeds
+router.get('/restaurants/top', authenticated, restController.getTopRestaurant) //top restaurant
+router.get('/restaurants/:id', authenticated, restController.getRestaurant) // restaurant
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
