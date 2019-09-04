@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt-nodejs')
 const db = require('../../models')
 const User = db.User
-
+const userServices = require('../../services/userServices.js')
 // JWT
 const jwt = require('jsonwebtoken')
 const passportJWT = require('passport-jwt')
@@ -9,7 +9,6 @@ const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
 
 let userController = {
-  
   signUp: (req, res) => {
     if(req.body.passwordCheck !== req.body.password){
       return res.json({ status: 'error', message: '兩次密碼輸入不同！'})
@@ -56,7 +55,78 @@ let userController = {
         }
       })
     })
-  }
+  },
+
+  // user profile page
+  editUser: (req, res) => {
+    userServices.editUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // user profile page
+  getUser: (req, res) => {
+    userServices.getUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // user profile page
+  putUser: (req, res) => {
+    userServices.putUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add favorite
+  addFavorite: (req, res) => {
+    userServices.addFavorite(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // remove favorite
+  removeFavorite: (req, res) => {
+    userServices.removeFavorite(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add Like
+  addLike: (req, res) => {
+    userServices.addLike(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add Like
+  removeLike: (req, res) => {
+    userServices.removeLike(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add Like
+  getTopUser: (req, res) => {
+    userServices.getTopUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add Like
+  addFollowing: (req, res) => {
+    userServices.addFollowing(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  // add Like
+  removeFollowing: (req, res) => {
+    userServices.removeFollowing(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+  
 }
 
 module.exports = userController

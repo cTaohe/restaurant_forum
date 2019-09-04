@@ -22,6 +22,20 @@ const authenticatedAdmin = (req, res, next) => {
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+router.post('/like/:restaurantId', authenticated, userController.addLike) // like restaurant
+router.delete('/like/:restaurantId', authenticated, userController.removeLike) // removelike restaurant
+
+router.post('/following/:userId', authenticated, userController.addFollowing) // add follow
+router.delete('/following/:userId', authenticated, userController.removeFollowing) // remove follow
+
+router.get('/users/top', authenticated, userController.getTopUser) // top user
+router.get('/users/:id', authenticated, userController.getUser) //user profile page
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser) // edit user profile
+router.get('/users/:id/edit', authenticated, userController.editUser) //user profile page
+
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
 router.get('/admin/restaurants/create', adminController.createRestaurant) //create restaurnat page
 router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
