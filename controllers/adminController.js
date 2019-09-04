@@ -17,13 +17,12 @@ const adminController = {
       return res.render('admin/restaurants', data)
     })
   },
+
   createRestaurant: (req, res) => {
-    Category.findAll().then(categories => {
-      return res.render('admin/create', {
-        categories: categories
-      })
+    adminService.createRestaurant(req, res, (data) => {
+      return res.render('admin/create', data)
     })
-   },
+  },
 
   postRestaurant: (req, res) => {
     adminService.postRestaurant(req, res, (data) => {
@@ -44,13 +43,8 @@ const adminController = {
   },
 
   editRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id).then(restaurant => {
-      Category.findAll().then(categories => {
-        return res.render('admin/create', {
-          categories: categories,
-          restaurant: restaurant
-        })
-      })
+    adminService.editRestaurant(req, res, (data) => {
+      res.render('admin/create', data)
     })
   },
 
@@ -68,47 +62,27 @@ const adminController = {
   deleteRestaurant: (req, res) => {
     adminService.deleteRestaurant(req, res, (data) => {
       if (data['status'] === 'success') {
+        req.flash('success_messages', data['message'])
         res.redirect('/admin/restaurants')
       }
     })
   },
-  
-  editUsers: (req, res) => {
-    let offset = 0
-    if (req.query.page) {
-      offset = (req.query.page - 1) * pageLimit
-    }
 
-    return User.findAndCountAll({ where:{ email: { [Op.ne]: 'root@example.com' } }, offset: offset, limit: pageLimit }).then(users => {
-      let page = Number(req.query.page) || 1
-      let pages = Math.ceil( users.count / pageLimit )
-      let totalPage = Array.from({length: pages}).map((item, index) => index + 1)
-      let prev = page - 1 < 1 ? 1 : page -1
-      let next = page + 1 > pages ? pages : page + 1
-      console.log(users)
-      return res.render('admin/users', { users, page, totalPage, prev, next })
+  editUsers: (req, res) => {
+    adminService.editUsers(req, res, (data) => {
+      return res.render('admin/users', data)
     })
   },
 
   putUsers: (req, res) => {
-    User.findByPk(req.params.id)
-    .then(user => {
-      if (!user) {
-        req.flash('error_messages', 'user is not exist')
+    adminService.putUsers(req, res, (data) => {
+      if (data['status' === 'error']) {
+        req.flash('error_messages', data['message'])
         return res.redirect('/admin/users')
-      }
-
-      if (req.user.id === user.id) {
-        req.flash('error_messages', "This action is not allowed")
-        return res.redirect('/admin/users')
-      }
-
-      user.update({isAdmin: !user.isAdmin})
-      .then(user => {
-        const text = (user.isAdmin)? 'Admin' : 'User'
-        req.flash('success_messages', `${user.name} was successfully to update to ${text}`)
+      } else {
+        req.flash('success_messages', data['message'])
         res.redirect('/admin/users')
-      })
+      }
     })
   }
 }
